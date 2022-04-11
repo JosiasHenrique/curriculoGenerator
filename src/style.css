@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+body {
+    border: 0;
+    background: rgb(219, 0, 182);
+    background: linear-gradient(73deg, rgba(219, 0, 182, 1) 0%, rgba(0, 119, 182, 1) 100%);
+    font-family: 'Roboto', sans-serif;
+}
+
+.titulo {
+    text-align: center;
+    color: #fff;
+    font-size: 50px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    word-spacing: 5px;
+    font-weight: 900;
+    margin-bottom: 0px;
+}
+
+.card {
+    width: 60%;
+    margin-top: 3rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.myButton {
+    background: rgb(219, 0, 182);
+    background: linear-gradient(73deg, rgba(219, 0, 182, 1) 0%, rgba(0, 119, 182, 1) 100%);
+    font-weight: bold !important;
+    letter-spacing: 2px !important;
+    word-spacing: 5px !important;
+}
+
+.accordion {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.cnh {
+    margin-left: 10px;
+}
+
+.mySpan {
+    font-size: 15px;
+    margin-left: 10px;
+}
+
+.aviso {
+    font-style: italic;
+    text-align: center;
+    color: #fff;
+    font-size: 20px;
+}
