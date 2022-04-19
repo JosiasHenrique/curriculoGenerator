@@ -1,14 +1,28 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Checkbox, FormControlLabel, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Snackbar, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export default function Objetivo() {
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const [status, setStatus] = useState('');
+export default function Objetivo({generateObjetivo}) {
+    const { register, handleSubmit } = useForm();
+    const [open, setOpen] = useState(false);
+
+    async function handleAddObjetivo(data) {
+        generateObjetivo(data.objetivo)
+        setOpen(true);
+    }
+
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
 
     return (
         <Accordion className="accordion">
             <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
@@ -16,6 +30,7 @@ export default function Objetivo() {
             </AccordionSummary>
             <AccordionDetails>
                 <Box
+                    onSubmit={handleSubmit(handleAddObjetivo)}
                     component="form"
                     sx={{
                         '& .MuiTextField-root': { m: 1 },
@@ -31,20 +46,28 @@ export default function Objetivo() {
                   Evite mencionar várias posições ou campos no mesmo
                   currículo que não estejam relacionados à vaga.
                   (Dica: Auxiliar Administrativo)"
-                        {...register('name', { required: true })}
+                        {...register('objetivo', { required: true })}
                         id="outlined-required"
                         label="Objetivo"
-                        name="name"
+                        name="objetivo"
                     />
                     <Button
-                        className="myButton"
+                        disabled={open}
                         type="submit"
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                     >
-                        Salvar
+                        Salvar objetivo
                     </Button>
+                    <Snackbar
+                        open={open}
+                        autoHideDuration={7000}
+                        onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                            Objetivo salvo!
+                        </Alert>
+                    </Snackbar>
                 </Box>
             </AccordionDetails>
         </Accordion>

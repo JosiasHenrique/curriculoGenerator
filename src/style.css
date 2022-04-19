@@ -53,3 +53,11 @@ body {
     color: #fff;
     font-size: 20px;
 }
+
+.cardFormacao {
+    background: #5748b625 !important;
+    font-size: 15px;
+    padding-left: 10px;
+    word-spacing: 5px;
+    margin-bottom: 10px;
+}

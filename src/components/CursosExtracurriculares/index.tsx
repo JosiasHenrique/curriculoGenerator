@@ -1,35 +1,91 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, IconButton, Snackbar, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-export default function CursosExtracurriculares() {
+interface CursoExtra {
+    curso: string,
+    instituicao: string,
+    inicio: string,
+    conclusao: string,
+    cargahoraria: string
+}
+
+export default function CursosExtracurriculares({ generateCursosEx }) {
+    const { register, reset, handleSubmit } = useForm();
     const [open, setOpen] = useState(false);
-    const [grau, setGrau] = useState('');
+    const [openSnack, setOpenSnack] = useState(false);
+    const [cursos, setCursos] = useState<CursoExtra[]>([]);
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
-    const handleClose = () => {
+    async function handleAddCursoEx(data) {
+        console.log(data)
+        setCursos([...cursos, data]);
+        reset();
         setOpen(false);
+    }
+
+    const handleCloseSnack = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSnack(false);
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setGrau(event.target.value);
+    const handleClickGenerate = () => {
+        generateCursosEx(cursos)
+        setOpenSnack(true);
+    };
+
+    const handleRemoveCurso = (index) => {
+        const values = [...cursos];
+        values.splice(index, 1);
+        setCursos(values);
+    }
+
+    const handleClose = () => {
+        setOpen(false);
     };
 
     return (
         <Accordion className="accordion">
             <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
                 <Typography>Cursos Extracurriculares</Typography>
             </AccordionSummary>
             <AccordionDetails>
-                <Button variant="outlined" onClick={handleClickOpen}>
-                    Inserir cursos
+                {cursos.map((x, index) => (
+                    <Card className="cardFormacao" key={index}>
+
+                        <p>{x.curso} em {x.instituicao} | {x.cargahoraria}
+                            <IconButton onClick={() => handleRemoveCurso(index)} aria-label="remove">
+                                <DeleteForeverIcon />
+                            </IconButton>
+                        </p>
+
+                    </Card>
+                ))}
+                <Button variant="outlined" sx={{ marginRight: '5px' }} onClick={handleClickOpen}>
+                    Novo curso
                 </Button>
+                <Button disabled={cursos.length ? false : true} variant="contained" onClick={handleClickGenerate}>
+                    Salvar
+                </Button>
+                <Snackbar
+                    open={openSnack}
+                    autoHideDuration={7000}
+                    onClose={handleCloseSnack}>
+                    <Alert onClose={handleCloseSnack} severity="success" sx={{ width: '100%' }}>
+                        Cursos salvos
+                    </Alert>
+                </Snackbar>
                 <Dialog
                     open={open}
                     onClose={handleClose}
@@ -37,11 +93,12 @@ export default function CursosExtracurriculares() {
                     aria-describedby="alert-dialog-description"
                 >
                     <DialogTitle id="alert-dialog-title">
-                        {"Use Google's location service?"}
+                        {"Cursos Extracurriculares"}
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
                             <Box
+                                onSubmit={handleSubmit(handleAddCursoEx)}
                                 component="form"
                                 sx={{
                                     '& .MuiTextField-root': { m: 1 },
@@ -53,6 +110,7 @@ export default function CursosExtracurriculares() {
                                     fullWidth
                                     id="outlined-required"
                                     label="Curso"
+                                    {...register('curso', { required: true })}
                                     name="curso"
                                 />
                                 <TextField
@@ -60,7 +118,8 @@ export default function CursosExtracurriculares() {
                                     id="outlined-required"
                                     label="Instituição"
                                     helperText="Nome da instituição ou escola."
-                                    name="Instituição"
+                                    {...register('instituicao', { required: true })}
+                                    name="instituicao"
                                 />
 
                                 <TextField
@@ -71,7 +130,8 @@ export default function CursosExtracurriculares() {
                                     type="date"
                                     id="outlined-required"
                                     label="Início"
-                                    name="Instituição"
+                                    {...register('inicio', { required: true })}
+                                    name="inicio"
                                 />
                                 <TextField
                                     fullWidth
@@ -81,15 +141,17 @@ export default function CursosExtracurriculares() {
                                     type="date"
                                     id="outlined-required"
                                     label="Conclusão"
-                                    name="Instituição"
+                                    {...register('conclusao', { required: true })}
+                                    name="conclusao"
                                 />
-                                  <TextField
+                                <TextField
                                     fullWidth
-                                   
-                                    type="text"
+
+                                    type="number"
                                     id="outlined-required"
                                     label="Carga horária"
-                                    name="Instituição"
+                                    {...register('cargahoraria', { required: true })}
+                                    name="cargahoraria"
                                 />
                                 <Button
                                     className="myButton"

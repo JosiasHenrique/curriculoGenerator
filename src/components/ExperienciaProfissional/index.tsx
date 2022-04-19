@@ -1,35 +1,102 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, IconButton, Snackbar, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-export default function ExperienciaProfissional() {
+
+interface ExperienciaProfissionalI {
+    cargo: string,
+    empresa: string,
+    cidade: string,
+    inicio: string,
+    saida: string,
+    empregoAtual: boolean,
+}
+
+export default function ExperienciaProfissional({generateExperiencias}) {
+    const { register, reset, handleSubmit } = useForm();
+    const [check, setChek] = useState(false);
     const [open, setOpen] = useState(false);
-    const [grau, setGrau] = useState('');
+    const [openSnack, setOpenSnack] = useState(false);
+    const [experiencias, setExperiencias] = useState<ExperienciaProfissionalI[]>([]);
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
+    const handleClickGenerate = () => {
+        generateExperiencias(experiencias)
+        setOpenSnack(true);
+    };
+
+    async function handleAddExperienciaProfissional(data) {
+        setExperiencias([...experiencias, data]);
+        reset();
+        setOpen(false);
+    }
+
+    const handleCloseSnack = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSnack(false);
+    };
+
+    const handleRemoveExperiencia = (index) => {
+        const values = [...experiencias];
+        values.splice(index, 1);
+        setExperiencias(values);
+    }
+
     const handleClose = () => {
         setOpen(false);
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setGrau(event.target.value);
+    const handleCheck = () => {
+        
+        if(check === false) {
+            setChek(true)
+        } else {
+            setChek(false)
+        }
     };
 
     return (
         <Accordion className="accordion">
             <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
                 <Typography>Experiência Profissional</Typography>
             </AccordionSummary>
             <AccordionDetails>
-                <Button variant="outlined" onClick={handleClickOpen}>
-                    Inserir Expêriencia
+                {experiencias.map((x, index) => (
+                    <Card className="cardFormacao" key={index}>
+
+                        <p>{x.cargo} em {x.empresa} | {x.inicio.split('-').reverse().join('/')} - {x.empregoAtual? 'Emprego atual': x.saida.split('-').reverse().join('/')}
+                            <IconButton onClick={() => handleRemoveExperiencia(index)} aria-label="remove">
+                                <DeleteForeverIcon />
+                            </IconButton>
+                        </p>
+
+                    </Card>
+                ))}
+                <Button variant="outlined" sx={{marginRight: '5px'}} onClick={handleClickOpen}>
+                    Nova Expêriencia
                 </Button>
+                <Button disabled={experiencias.length? false : true} variant="contained"  onClick={handleClickGenerate}>
+                    Salvar
+                </Button>
+                <Snackbar
+                        open={openSnack}
+                        autoHideDuration={7000}
+                        onClose={handleCloseSnack}>
+                        <Alert onClose={handleCloseSnack} severity="success" sx={{ width: '100%' }}>
+                            Experiências salvas
+                        </Alert>
+                    </Snackbar>
                 <Dialog
                     open={open}
                     onClose={handleClose}
@@ -37,11 +104,12 @@ export default function ExperienciaProfissional() {
                     aria-describedby="alert-dialog-description"
                 >
                     <DialogTitle id="alert-dialog-title">
-                        {"Use Google's location service?"}
+                        {"Experiência profissional"}
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
                             <Box
+                                onSubmit={handleSubmit(handleAddExperienciaProfissional)}
                                 component="form"
                                 sx={{
                                     '& .MuiTextField-root': { m: 1 },
@@ -49,26 +117,27 @@ export default function ExperienciaProfissional() {
                                 noValidate
                                 autoComplete="off"
                             >
-
                                 <TextField
                                     fullWidth
                                     id="outlined-required"
-                                    label="Curso"
-                                    name="Cargo"
+                                    label="Cargo"
+                                    {...register('cargo', { required: true })}
+                                    name="cargo"
                                 />
                                 <TextField
                                     fullWidth
                                     id="outlined-required"
                                     label="Empresa"
-                                    name="Instituição"
+                                    {...register('empresa', { required: true })}
+                                    name="empresa"
                                 />
                                 <TextField
                                     fullWidth
                                     id="outlined-required"
                                     label="Cidade"
-                                    name="Instituição"
+                                    {...register('cidade', { required: true })}
+                                    name="cidade"
                                 />
-
                                 <TextField
                                     fullWidth
                                     InputLabelProps={{
@@ -77,7 +146,8 @@ export default function ExperienciaProfissional() {
                                     type="date"
                                     id="outlined-required"
                                     label="Início"
-                                    name="Instituição"
+                                    {...register('inicio', { required: true })}
+                                    name="inicio"
                                 />
                                 <TextField
                                     fullWidth
@@ -87,20 +157,11 @@ export default function ExperienciaProfissional() {
                                     type="date"
                                     id="outlined-required"
                                     label="Saída"
+                                    {...register('saida')}
                                     helperText="Obs: Se estiver trabalhando, marque o Checkbox abaixo."
-                                    name="Instituição"
+                                    name="saida"
                                 />
-                                <FormControlLabel sx={{ marginLeft: '10px' }} control={<Checkbox defaultChecked />} label="Emprego atual" />
-                                <TextField
-                                    fullWidth
-                                    type="text"
-                                    multiline
-                                    rows={4}
-                                    id="outlined-required"
-                                    label="Atividades"
-                                    helperText="Informe o seu papel na empresa."
-                                    name="Instituição"
-                                />
+                                <FormControlLabel sx={{ marginLeft: '10px' }} control={<Checkbox value={check} {...register('empregoAtual')} name="empregoAtual" onChange={handleCheck} />} label="Emprego atual" />
                                 <Button
                                     className="myButton"
                                     type="submit"

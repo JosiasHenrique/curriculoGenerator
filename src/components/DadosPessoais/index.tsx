@@ -1,10 +1,54 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Checkbox, FormControlLabel, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export default function DadosPessoais() {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
+const cats = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E'
+];
+
+export default function DadosPessoais({ generateDadosPessoais }) {
+    const [categoriaCnh, setCategoriaCnh] = useState<string[]>([]);
+    const [open, setOpen] = useState(false);
+    const { register, handleSubmit } = useForm();
     const [status, setStatus] = useState('');
+
+    const handleChangeCat = (event: SelectChangeEvent<typeof categoriaCnh>) => {
+        const {
+            target: { value },
+        } = event;
+        setCategoriaCnh(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
+    async function handleAddDadosPessoais(data) {
+        generateDadosPessoais(data)
+        setOpen(true);
+    }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setStatus(event.target.value);
@@ -13,6 +57,7 @@ export default function DadosPessoais() {
     return (
         <Accordion>
             <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
@@ -20,6 +65,7 @@ export default function DadosPessoais() {
             </AccordionSummary>
             <AccordionDetails>
                 <Box
+                    onSubmit={handleSubmit(handleAddDadosPessoais)}
                     component="form"
                     sx={{
                         '& .MuiTextField-root': { m: 1 },
@@ -30,23 +76,25 @@ export default function DadosPessoais() {
                     <TextField
                         fullWidth
                         helperText="Informe seu nome completo"
-                        {...register('name', { required: true })}
+                        {...register('nome', { required: true })}
                         id="outlined-required"
-                        label="Nome"
-                        name="name"
+                        label="Nome completo"
+                        name="nome"
                     />
                     <TextField
                         fullWidth
                         id="outlined-disabled"
+                        {...register("nacionalidade", { required: true })}
+                        name="nacionalidade"
                         label="Nacionalidade"
                     />
                     <TextField
-                        {...register("categoriaId", { required: true })}
-                        id="categoriaId"
+                        {...register("estado", { required: true })}
+                        id="estado"
                         select
                         label="Estado Civil"
                         value={status}
-                        name="categoriaId"
+                        name="estado"
                         onChange={handleChange}
                         SelectProps={{
                             native: true,
@@ -59,7 +107,8 @@ export default function DadosPessoais() {
                         <option value={'Divorciada'}>Divorciada</option>
                     </TextField>
                     <TextField
-                        id="outlined-password-input"
+                        {...register("dataNasc", { required: true })}
+                        name="dataNasc"
                         label="Data de Nascimento"
                         InputLabelProps={{
                             shrink: true,
@@ -68,44 +117,74 @@ export default function DadosPessoais() {
                     />
                     <TextField
                         id="outlined-number"
+                        {...register("telefone", { required: true })}
+                        name="telefone"
                         label="Telefone"
                         type="tel"
                     />
                     <TextField
                         fullWidth
+                        {...register("email", { required: true })}
+                        name="email"
                         id="outlined-number"
                         label="E-mail"
                         type="email"
                     />
                     <TextField
                         fullWidth
+                        {...register("localNasc", { required: true })}
+                        name="localNasc"
                         id="outlined-read-only-input"
-                        label="Local de Nascimento"
+                        label="Cidade"
                         helperText="Ex: São Paulo - SP"
                     />
                     <TextField
                         fullWidth
+                        {...register("endereco", { required: true })}
+                        name="endereco"
                         id="outlined-text"
                         label="Endereço"
                         type="text"
                     />
-                    <div className="cnh">
-                        <p>CNH</p>
-                        <FormControlLabel control={<Checkbox />} label="A" />
-                        <FormControlLabel control={<Checkbox />} label="B" />
-                        <FormControlLabel control={<Checkbox />} label="C" />
-                        <FormControlLabel control={<Checkbox />} label="D" />
-                        <FormControlLabel control={<Checkbox />} label="E" />
-                    </div>
+                    <FormControl sx={{ m: 1, width: 300 }}>
+                        <InputLabel id="demo-multiple-checkbox-label">CNH</InputLabel>
+                        <Select
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            value={categoriaCnh}
+                            {...register("cnh", { required: true })}
+                            name="cnh"
+                            onChange={handleChangeCat}
+                            input={<OutlinedInput label="Tag" />}
+                            renderValue={(selected) => selected.join(', ')}
+                            MenuProps={MenuProps}
+                        >
+                            {cats.map((cat) => (
+                                <MenuItem key={cat} value={cat}>
+                                    <Checkbox checked={categoriaCnh.indexOf(cat) > -1} />
+                                    <ListItemText primary={cat} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <Button
-                        className="myButton"
+                        disabled={open}
                         type="submit"
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                     >
-                        Salvar
+                        Salvar dados pessoais
                     </Button>
+                    <Snackbar
+                        open={open}
+                        autoHideDuration={7000}
+                        onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                            Dados Pessoais salvo!
+                        </Alert>
+                    </Snackbar>
                 </Box>
             </AccordionDetails>
         </Accordion>

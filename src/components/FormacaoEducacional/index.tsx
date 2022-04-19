@@ -1,13 +1,31 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Snackbar, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-export default function FormacaoEducacional() {
+interface Formacao {
+    grau: string,
+    curso: string,
+    instituicao: string,
+    inicio: string,
+    conclusao: string
+}
+
+export default function FormacaoEducacional({generateFormacoes}) {
     const [open, setOpen] = useState(false);
+    const [openSnack, setOpenSnack] = useState(false);
     const [grau, setGrau] = useState('');
+    const { register, reset, handleSubmit } = useForm();
+    const [formacoes, setFormacoes] = useState<Formacao[]>([]);
 
     const handleClickOpen = () => {
         setOpen(true);
+    };
+
+    const handleClickGenerate = () => {
+        generateFormacoes(formacoes)
+        setOpenSnack(true);
     };
 
     const handleClose = () => {
@@ -18,18 +36,61 @@ export default function FormacaoEducacional() {
         setGrau(event.target.value);
     };
 
+    const handleCloseSnack = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSnack(false);
+    };
+
+
+    const handleRemoveFormacao = (index) => {
+        const values = [...formacoes];
+        values.splice(index, 1);
+        setFormacoes(values);
+    }
+
+    async function handleAddFormacaoEducacional(data) {
+        setFormacoes([...formacoes, data]);
+        reset();
+        setOpen(false);
+    }
+
     return (
         <Accordion className="accordion">
             <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
                 <Typography>Formação Educacional</Typography>
             </AccordionSummary>
             <AccordionDetails>
-                <Button variant="outlined" onClick={handleClickOpen}>
-                    Inserir formação
+                {formacoes.map((x, index) => (
+                    <Card className="cardFormacao" key={index}>
+                       
+                            <p>{x.grau} | {x.instituicao} | {x.inicio} - {x.conclusao}
+                            <IconButton onClick={() => handleRemoveFormacao(index)} aria-label="remove">
+                                <DeleteForeverIcon />
+                            </IconButton>
+                            </p>
+                       
+                    </Card>
+                ))}
+                <Button variant="outlined" sx={{marginRight: '5px'}} onClick={handleClickOpen}>
+                    Nova formação
                 </Button>
+                <Button disabled={formacoes.length? false : true} variant="contained"  onClick={handleClickGenerate}>
+                    Salvar
+                </Button>
+                <Snackbar
+                        open={openSnack}
+                        autoHideDuration={7000}
+                        onClose={handleCloseSnack}>
+                        <Alert onClose={handleCloseSnack} severity="success" sx={{ width: '100%' }}>
+                            Formações salvas
+                        </Alert>
+                    </Snackbar>
                 <Dialog
                     open={open}
                     onClose={handleClose}
@@ -37,11 +98,12 @@ export default function FormacaoEducacional() {
                     aria-describedby="alert-dialog-description"
                 >
                     <DialogTitle id="alert-dialog-title">
-                        {"Use Google's location service?"}
+                        {"Inserir formação"}
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
                             <Box
+                                onSubmit={handleSubmit(handleAddFormacaoEducacional)}
                                 component="form"
                                 sx={{
                                     '& .MuiTextField-root': { m: 1 },
@@ -55,7 +117,8 @@ export default function FormacaoEducacional() {
                                     select
                                     label="Grau de formação"
                                     value={grau}
-                                    name="categoriaId"
+                                    {...register('grau', { required: true })}
+                                    name="grau"
                                     onChange={handleChange}
                                     SelectProps={{
                                         native: true,
@@ -75,6 +138,7 @@ export default function FormacaoEducacional() {
                                     fullWidth
                                     id="outlined-required"
                                     label="Curso"
+                                    {...register('curso', { required: true })}
                                     name="curso"
                                 />
                                 <TextField
@@ -82,7 +146,8 @@ export default function FormacaoEducacional() {
                                     id="outlined-required"
                                     label="Instituição"
                                     helperText="Nome da instituição ou escola."
-                                    name="Instituição"
+                                    {...register('instituicao', { required: true })}
+                                    name="instituicao"
                                 />
 
                                 <TextField
@@ -93,7 +158,8 @@ export default function FormacaoEducacional() {
                                     type="date"
                                     id="outlined-required"
                                     label="Início"
-                                    name="Instituição"
+                                    {...register('inicio', { required: true })}
+                                    name="inicio"
                                 />
                                 <TextField
                                     fullWidth
@@ -103,7 +169,8 @@ export default function FormacaoEducacional() {
                                     type="date"
                                     id="outlined-required"
                                     label="Conclusão"
-                                    name="Instituição"
+                                    {...register('conclusao', { required: true })}
+                                    name="conclusao"
                                 />
                                 <Button
                                     className="myButton"

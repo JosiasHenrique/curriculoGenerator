@@ -1,18 +1,29 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Checkbox, FormControlLabel, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Snackbar, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export default function InformacoesAdicionais() {
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const [status, setStatus] = useState('');
+export default function InformacoesAdicionais({ generateInfoAdd }) {
+    const { register, handleSubmit } = useForm();
+    const [open, setOpen] = useState(false);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setStatus(event.target.value);
+    
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
     };
+
+    async function handleAddInfoAd(data) {
+        generateInfoAdd(data.info)
+        setOpen(true);
+    }
 
     return (
         <Accordion>
             <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
@@ -20,6 +31,7 @@ export default function InformacoesAdicionais() {
             </AccordionSummary>
             <AccordionDetails>
                 <Box
+                    onSubmit={handleSubmit(handleAddInfoAd)}
                     component="form"
                     sx={{
                         '& .MuiTextField-root': { m: 1 },
@@ -30,21 +42,29 @@ export default function InformacoesAdicionais() {
                     <TextField
                         fullWidth
                         helperText="Dica: Tenho disponibilidade para início imediato, disponibilidade para viagens a trabalho, etc..."
-                        {...register('name', { required: true })}
+                        {...register('info', { required: true })}
                         id="outlined-required"
                         label="Informações"
-                        name="name"
+                        name="info"
                     />
-                    
+
                     <Button
-                        className="myButton"
+                        disabled={open}
                         type="submit"
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                     >
-                        Salvar
+                        Salvar informações adicionais
                     </Button>
+                    <Snackbar
+                        open={open}
+                        autoHideDuration={7000}
+                        onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                            Informações adicionais salva!
+                        </Alert>
+                    </Snackbar>
                 </Box>
             </AccordionDetails>
         </Accordion>
