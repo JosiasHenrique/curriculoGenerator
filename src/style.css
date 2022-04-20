@@ -63,3 +63,9 @@ body {
     word-spacing: 5px;
     margin-bottom: 10px;
 }
+
+@media screen and (max-width: 600px) {
+    .card {
+        width: 90%;
+    }
+}
