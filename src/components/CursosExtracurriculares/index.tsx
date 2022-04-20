@@ -109,14 +109,14 @@ export default function CursosExtracurriculares({ generateCursosEx }) {
                                 <TextField
                                     fullWidth
                                     id="outlined-required"
-                                    label="Curso"
+                                    label="Curso*"
                                     {...register('curso', { required: true })}
                                     name="curso"
                                 />
                                 <TextField
                                     fullWidth
                                     id="outlined-required"
-                                    label="Instituição"
+                                    label="Instituição*"
                                     helperText="Nome da instituição ou escola."
                                     {...register('instituicao', { required: true })}
                                     name="instituicao"
@@ -129,7 +129,7 @@ export default function CursosExtracurriculares({ generateCursosEx }) {
                                     }}
                                     type="date"
                                     id="outlined-required"
-                                    label="Início"
+                                    label="Início*"
                                     {...register('inicio', { required: true })}
                                     name="inicio"
                                 />
@@ -140,17 +140,17 @@ export default function CursosExtracurriculares({ generateCursosEx }) {
                                     }}
                                     type="date"
                                     id="outlined-required"
-                                    label="Conclusão"
+                                    helperText="ou previsão de conclusão"
+                                    label="Conclusão*"
                                     {...register('conclusao', { required: true })}
                                     name="conclusao"
                                 />
                                 <TextField
                                     fullWidth
-
                                     type="number"
                                     id="outlined-required"
                                     label="Carga horária"
-                                    {...register('cargahoraria', { required: true })}
+                                    {...register('cargahoraria')}
                                     name="cargahoraria"
                                 />
                                 <Button

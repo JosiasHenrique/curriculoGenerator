@@ -46,7 +46,7 @@ export default function Qualificacoes({generateResumo}) {
                         id="outlined-required"
                         multiline
                         rows={4}
-                        label="Resumo de Qualificações"
+                        label="Resumo de Qualificações*"
                         name="resumo"
                     />
                     <Button

@@ -69,7 +69,7 @@ export default function FormacaoEducacional({generateFormacoes}) {
                 {formacoes.map((x, index) => (
                     <Card className="cardFormacao" key={index}>
                        
-                            <p>{x.grau} | {x.instituicao} | {x.inicio} - {x.conclusao}
+                            <p>{x.curso? `${x.curso} (${x.grau})`: `${x.grau}`} | {x.instituicao} | {x.inicio.split('-').reverse().join('/')} - {x.conclusao.split('-').reverse().join('/')}
                             <IconButton onClick={() => handleRemoveFormacao(index)} aria-label="remove">
                                 <DeleteForeverIcon />
                             </IconButton>
@@ -98,7 +98,7 @@ export default function FormacaoEducacional({generateFormacoes}) {
                     aria-describedby="alert-dialog-description"
                 >
                     <DialogTitle id="alert-dialog-title">
-                        {"Inserir formação"}
+                        {"Inserir formação (do mais recente para o mais antigo)"}
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
@@ -115,7 +115,7 @@ export default function FormacaoEducacional({generateFormacoes}) {
                                     fullWidth
                                     id="categoriaId"
                                     select
-                                    label="Grau de formação"
+                                    label="Grau de formação*"
                                     value={grau}
                                     {...register('grau', { required: true })}
                                     name="grau"
@@ -138,18 +138,17 @@ export default function FormacaoEducacional({generateFormacoes}) {
                                     fullWidth
                                     id="outlined-required"
                                     label="Curso"
-                                    {...register('curso', { required: true })}
+                                    {...register('curso')}
                                     name="curso"
                                 />
                                 <TextField
                                     fullWidth
                                     id="outlined-required"
-                                    label="Instituição"
+                                    label="Instituição*"
                                     helperText="Nome da instituição ou escola."
                                     {...register('instituicao', { required: true })}
                                     name="instituicao"
                                 />
-
                                 <TextField
                                     fullWidth
                                     InputLabelProps={{
@@ -157,7 +156,7 @@ export default function FormacaoEducacional({generateFormacoes}) {
                                     }}
                                     type="date"
                                     id="outlined-required"
-                                    label="Início"
+                                    label="Início*"
                                     {...register('inicio', { required: true })}
                                     name="inicio"
                                 />
@@ -167,6 +166,7 @@ export default function FormacaoEducacional({generateFormacoes}) {
                                         shrink: true,
                                     }}
                                     type="date"
+                                    helperText="ou previsão de conclusão"
                                     id="outlined-required"
                                     label="Conclusão"
                                     {...register('conclusao', { required: true })}

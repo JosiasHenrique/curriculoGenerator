@@ -48,7 +48,7 @@ export default function Objetivo({generateObjetivo}) {
                   (Dica: Auxiliar Administrativo)"
                         {...register('objetivo', { required: true })}
                         id="outlined-required"
-                        label="Objetivo"
+                        label="Objetivo*"
                         name="objetivo"
                     />
                     <Button

@@ -75,24 +75,16 @@ export default function DadosPessoais({ generateDadosPessoais }) {
                 >
                     <TextField
                         fullWidth
-                        helperText="Informe seu nome completo"
                         {...register('nome', { required: true })}
                         id="outlined-required"
-                        label="Nome completo"
+                        label="Nome completo*"
                         name="nome"
-                    />
-                    <TextField
-                        fullWidth
-                        id="outlined-disabled"
-                        {...register("nacionalidade", { required: true })}
-                        name="nacionalidade"
-                        label="Nacionalidade"
                     />
                     <TextField
                         {...register("estado", { required: true })}
                         id="estado"
                         select
-                        label="Estado Civil"
+                        label="Estado Civil*"
                         value={status}
                         name="estado"
                         onChange={handleChange}
@@ -109,7 +101,7 @@ export default function DadosPessoais({ generateDadosPessoais }) {
                     <TextField
                         {...register("dataNasc", { required: true })}
                         name="dataNasc"
-                        label="Data de Nascimento"
+                        label="Data de Nascimento*"
                         InputLabelProps={{
                             shrink: true,
                         }}
@@ -119,7 +111,7 @@ export default function DadosPessoais({ generateDadosPessoais }) {
                         id="outlined-number"
                         {...register("telefone", { required: true })}
                         name="telefone"
-                        label="Telefone"
+                        label="Telefone*"
                         type="tel"
                     />
                     <TextField
@@ -127,7 +119,7 @@ export default function DadosPessoais({ generateDadosPessoais }) {
                         {...register("email", { required: true })}
                         name="email"
                         id="outlined-number"
-                        label="E-mail"
+                        label="E-mail*"
                         type="email"
                     />
                     <TextField
@@ -135,7 +127,7 @@ export default function DadosPessoais({ generateDadosPessoais }) {
                         {...register("localNasc", { required: true })}
                         name="localNasc"
                         id="outlined-read-only-input"
-                        label="Cidade"
+                        label="Cidade*"
                         helperText="Ex: São Paulo - SP"
                     />
                     <TextField
@@ -153,7 +145,7 @@ export default function DadosPessoais({ generateDadosPessoais }) {
                             id="demo-multiple-checkbox"
                             multiple
                             value={categoriaCnh}
-                            {...register("cnh", { required: true })}
+                            {...register("cnh")}
                             name="cnh"
                             onChange={handleChangeCat}
                             input={<OutlinedInput label="Tag" />}

@@ -40,13 +40,13 @@ interface CursoExtra {
 
 function App() {
   const [resumo, setResumo] = useState('');
-  const [objetivo, setObjetivo] = useState('');
+  const [objetivo, setObjetivo] = useState(null);
   const [infoAdicional, setInfoAdicional] = useState('');
   const [formacoes, setFormacoes] = useState<Formacao[]>([]);
   const [cursosExtras, setCursosExtras] = useState<CursoExtra[]>([]);
   const [experiencias, setExperiencias] = useState<ExperienciasProfissionais[]>([]);
   const [dadosP, setDadosP] = useState({
-    nome: '', nacionalidade: '', estado: '',
+    nome: '', estado: '',
     dataNasc: '', telefone: '', email: '', localNasc: '', endereco: '', cnh: ''
   });
 
@@ -76,7 +76,7 @@ function App() {
 
   const generateDadosPessoais = (dadosPessoais) => {
     setDadosP({
-      nome: dadosPessoais.nome, nacionalidade: dadosPessoais.nacionalidade, estado: dadosPessoais.estado,
+      nome: dadosPessoais.nome, estado: dadosPessoais.estado,
       dataNasc: dadosPessoais.dataNasc, telefone: dadosPessoais.telefone, email: dadosPessoais.email, localNasc: dadosPessoais.localNasc, endereco: dadosPessoais.endereco, cnh: dadosPessoais.cnh
     })
   }
@@ -85,10 +85,12 @@ function App() {
 
     const reportTitle = [
       {
-        text: `${dadosP.nome}`,
-        fontSize: 15,
+        text: `${dadosP.nome}\n\n\n\n`,
+        fontSize: 25,
+        style: 'reportName',
         bold: true,
-        margin: [15, 20, 0, 45] //left, top, right, bottom
+        alignment: 'center',
+        margin: [0, 20, 0, 0],
       }
     ];
 
@@ -99,42 +101,91 @@ function App() {
       {
         text: 'DADOS PESSOAIS',
         style: 'subheader',
+        margin: [0, 30, 0, 0],
         bold: true
       },
+      {
+        text:
+          '__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________',
+        alignment: 'center',
+        fontSize: 5,
+        colSpan: 3,
+      },
+      {},
+      {},
       `${dadosP.estado}, ${idade} anos (${convertDataNasc})`,
       `${dadosP.endereco}, ${dadosP.localNasc}`,
       `Tel: ${dadosP.telefone}`,
       `E-mail: ${dadosP.email}`,
-      `CNH: ${dadosP.cnh} \n\n`,
+      `${dadosP.cnh ? `CNH: ${dadosP.cnh}\n\n\n` : '\n\n\n'}`,
+
       {
         text: 'OBJETIVO',
         style: 'subheader',
         bold: true
       },
-      `${objetivo} \n\n`,
+      {
+        text:
+          '__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________',
+        alignment: 'center',
+        fontSize: 5,
+        colSpan: 3,
+      },
+      {},
+      {},
+      `${objetivo} \n\n\n`,
       {
         text: 'RESUMO DE QUALIFICAÇÕES',
         style: 'subheader',
         bold: true
       },
-      `${resumo} \n\n`,
+      {
+        text:
+          '__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________',
+        alignment: 'center',
+        fontSize: 5,
+        colSpan: 3,
+      },
+      {},
+      {},
+      `${resumo} \n\n\n`,
       {
         text: 'FORMAÇÃO EDUCACIONAL',
         style: 'subheader',
+        margin: [0, 20, 0, 0],
         bold: true
       },
       {
+        text:
+          '__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________',
+        alignment: 'center',
+        fontSize: 5,
+        colSpan: 3,
+      },
+      {},
+      {},
+      {
         ul: [
           formacoes.map((x) => (
-            `${x.curso}(${x.grau}) em ${x.instituicao} (${x.inicio.split('-').reverse().join('/')} - ${x.conclusao.split('-').reverse().join('/')})\n\n`
+            `${x.curso ? `${x.curso}(${x.grau})` : `${x.grau}`} em ${x.instituicao} (${x.inicio.split('-').reverse().join('/')} - ${x.conclusao.split('-').reverse().join('/')})\n\n`
           )),
         ]
       },
       {
         text: 'EXPERIÊNCIA PROFISSIONAL',
+        margin: [0, 20, 0, 0],
         style: 'subheader',
         bold: true
       },
+      {
+        text:
+          '__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________',
+        alignment: 'center',
+        fontSize: 5,
+        colSpan: 3,
+      },
+      {},
+      {},
       {
         ul: [
           experiencias.map((x) => (
@@ -144,41 +195,49 @@ function App() {
       },
       {
         text: 'CURSOS EXTRACURRICULARES',
+        margin: [0, 20, 0, 0],
         style: 'subheader',
         bold: true
       },
+      {
+        text:
+          '__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________',
+        alignment: 'center',
+        fontSize: 5,
+        colSpan: 3,
+      },
+      {},
+      {},
       {
         ul: [
           cursosExtras.map((x) => (
-            `${x.curso} em ${x.instituicao} | Carga horária: ${x.cargahoraria}h`
-          ))
+            `${x.curso} em ${x.instituicao} | ${x.cargahoraria ? `Carga horária: ${x.cargahoraria}h` : ``}\n\n`
+          )),
         ]
       },
       {
-        text: 'INFORMAÇÕES ADICIONAIS',
+        text: `${infoAdicional ? `INFORMAÇÕES ADICIONAIS` : ``}`,
         style: 'subheader',
+        margin: [0, 20, 0, 0],
         bold: true
       },
-      `${infoAdicional}`
+      {
+        text:
+          '__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________',
+        alignment: 'center',
+        fontSize: 5,
+        colSpan: 3,
+      },
+      {},
+      {},
+      `${infoAdicional ? infoAdicional : ''}`
     ];
-
-    function Rodape(currentPage, pageCount) {
-      return [
-        {
-          text: currentPage + ' / ' + pageCount,
-          alignment: 'right',
-          fontSize: 9,
-          margin: [0, 10, 20, 0]
-        }
-      ]
-    }
 
     const docDefinitios = {
       pageSize: 'A4',
       pageMargins: [15, 50, 15, 40],
       header: [reportTitle],
-      content: details,
-      footer: Rodape
+      content: details
     }
     pdfMake.createPdf(docDefinitios).download();
   }
@@ -190,39 +249,6 @@ function App() {
       <Card id="content" className="card">
         <CardContent>
           <div>
-            <p> {dadosP.cnh} </p>
-            {resumo}
-            {infoAdicional}
-            {objetivo}
-            {formacoes.map((x) => (
-              <Card key={x.grau}>
-                <CardContent>
-                  {x.grau} em {x.instituicao} {x.inicio} - {x.conclusao}
-
-                </CardContent>
-              </Card>
-            ))}
-
-            {experiencias.map((x, index) => (
-              <Card className="cardFormacao" key={index}>
-
-                <p>{x.cargo} em {x.empresa} | {x.inicio} - {x.saida}
-
-                </p>
-
-              </Card>
-            ))}
-
-            {cursosExtras.map((x, index) => (
-              <Card className="cardFormacao" key={index}>
-
-                <p>{x.curso} em {x.instituicao} | {x.cargahoraria}
-
-                </p>
-
-              </Card>
-            ))}
-
             <DadosPessoais generateDadosPessoais={generateDadosPessoais} />
             <Objetivo generateObjetivo={generateObjetivo} />
             <Qualificacoes generateResumo={generateResumo} />
@@ -234,13 +260,13 @@ function App() {
         </CardContent>
 
         <Button
-          className="myButton"
+          disabled={objetivo ? false : true}
           onClick={generatePDF}
           fullWidth
           variant="contained"
-          sx={{ mt: 3, mb: 2 }}
+          color="success"
         >
-          Gerar curriculo
+          Baixar curriculo
         </Button>
       </Card>
       <Typography sx={{ marginTop: '20px', color: '#fff' }} variant="body2" color="text.secondary" align="center">

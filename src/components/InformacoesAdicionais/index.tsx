@@ -42,7 +42,7 @@ export default function InformacoesAdicionais({ generateInfoAdd }) {
                     <TextField
                         fullWidth
                         helperText="Dica: Tenho disponibilidade para início imediato, disponibilidade para viagens a trabalho, etc..."
-                        {...register('info', { required: true })}
+                        {...register('info')}
                         id="outlined-required"
                         label="Informações"
                         name="info"

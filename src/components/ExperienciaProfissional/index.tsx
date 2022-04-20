@@ -104,7 +104,7 @@ export default function ExperienciaProfissional({generateExperiencias}) {
                     aria-describedby="alert-dialog-description"
                 >
                     <DialogTitle id="alert-dialog-title">
-                        {"Experiência profissional"}
+                        {"Experiência profissional (da mais recente para a mais antiga)"}
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
@@ -120,14 +120,14 @@ export default function ExperienciaProfissional({generateExperiencias}) {
                                 <TextField
                                     fullWidth
                                     id="outlined-required"
-                                    label="Cargo"
+                                    label="Cargo*"
                                     {...register('cargo', { required: true })}
                                     name="cargo"
                                 />
                                 <TextField
                                     fullWidth
                                     id="outlined-required"
-                                    label="Empresa"
+                                    label="Empresa*"
                                     {...register('empresa', { required: true })}
                                     name="empresa"
                                 />
@@ -135,7 +135,7 @@ export default function ExperienciaProfissional({generateExperiencias}) {
                                     fullWidth
                                     id="outlined-required"
                                     label="Cidade"
-                                    {...register('cidade', { required: true })}
+                                    {...register('cidade')}
                                     name="cidade"
                                 />
                                 <TextField
@@ -145,7 +145,7 @@ export default function ExperienciaProfissional({generateExperiencias}) {
                                     }}
                                     type="date"
                                     id="outlined-required"
-                                    label="Início"
+                                    label="Início*"
                                     {...register('inicio', { required: true })}
                                     name="inicio"
                                 />
